@@ -40,13 +40,6 @@
             <option value="violet">Deep Violet</option>
         </select>
 
-        <label>Prediction Speed / Mode:</label>
-        <select id="mode-select">
-            <option value="30">Auto Fast (Every 30 Sec)</option>
-            <option value="60">Auto Normal (Every 60 Sec)</option>
-            <option value="15">Auto Turbo (Every 15 Sec)</option>
-        </select>
-
         <button onclick="saveAdminSettings()">UPDATE LIVE SYSTEM</button>
     </div>
 
@@ -70,7 +63,6 @@
                 if(d.gameUrl) document.getElementById('game-url-input').value = d.gameUrl;
                 if(d.waChannel) document.getElementById('wa-link-input').value = d.waChannel;
                 if(d.theme) document.getElementById('theme-select').value = d.theme;
-                if(d.speed) document.getElementById('mode-select').value = d.speed;
             }
         });
 
@@ -80,8 +72,7 @@
                 accessPassword: document.getElementById('pass-input').value.trim(),
                 gameUrl: document.getElementById('game-url-input').value.trim(),
                 waChannel: document.getElementById('wa-link-input').value.trim(),
-                theme: document.getElementById('theme-select').value,
-                speed: document.getElementById('mode-select').value
+                theme: document.getElementById('theme-select').value
             }, { merge: true }).then(() => {
                 alert("✅ Web Settings Successfully Updated Live!");
             }).catch(err => alert("Error: " + err.message));
