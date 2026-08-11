@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Admin Panel - 92STAR WILD KING</title>
+    <title>Master Admin Control - WILD KING</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
@@ -18,7 +18,7 @@
 <body>
 
     <div class="card">
-        <h2>👑 MASTER CONTROL PANEL</h2>
+        <h2>👑 ADMIN CONTROL PANEL</h2>
         
         <label>Portal / Header Title:</label>
         <input type="text" id="title-input" placeholder="92STAR WILD KING">
@@ -30,15 +30,13 @@
         <input type="text" id="game-url-input" placeholder="https://www.92star5.com/#/register?...">
 
         <label>WhatsApp Channel Link:</label>
-        <input type="text" id="wa-link-input" placeholder="https://whatsapp.com/channel/...">
+        <input type="text" id="wa-channel-input" placeholder="https://whatsapp.com/channel/...">
 
-        <label>User Panel Theme Style:</label>
-        <select id="theme-select">
-            <option value="emerald">Emerald Green (Default)</option>
-            <option value="crimson">Crimson Red</option>
-            <option value="royal">Royal Blue</option>
-            <option value="violet">Deep Violet</option>
-        </select>
+        <label>WhatsApp Contact Number (e.g. 923001234567):</label>
+        <input type="text" id="wa-num-input" placeholder="923001234567">
+
+        <label>Telegram Contact Username (e.g. username):</label>
+        <input type="text" id="tg-input" placeholder="your_telegram">
 
         <button onclick="saveAdminSettings()">UPDATE LIVE SYSTEM</button>
     </div>
@@ -61,8 +59,9 @@
                 if(d.headerTitle) document.getElementById('title-input').value = d.headerTitle;
                 if(d.accessPassword) document.getElementById('pass-input').value = d.accessPassword;
                 if(d.gameUrl) document.getElementById('game-url-input').value = d.gameUrl;
-                if(d.waChannel) document.getElementById('wa-link-input').value = d.waChannel;
-                if(d.theme) document.getElementById('theme-select').value = d.theme;
+                if(d.waChannel) document.getElementById('wa-channel-input').value = d.waChannel;
+                if(d.waNumber) document.getElementById('wa-num-input').value = d.waNumber;
+                if(d.telegram) document.getElementById('tg-input').value = d.telegram;
             }
         });
 
@@ -71,10 +70,11 @@
                 headerTitle: document.getElementById('title-input').value.trim(),
                 accessPassword: document.getElementById('pass-input').value.trim(),
                 gameUrl: document.getElementById('game-url-input').value.trim(),
-                waChannel: document.getElementById('wa-link-input').value.trim(),
-                theme: document.getElementById('theme-select').value
+                waChannel: document.getElementById('wa-channel-input').value.trim(),
+                waNumber: document.getElementById('wa-num-input').value.trim(),
+                telegram: document.getElementById('tg-input').value.trim()
             }, { merge: true }).then(() => {
-                alert("✅ Web Settings Successfully Updated Live!");
+                alert("✅ Settings Successfully Updated!");
             }).catch(err => alert("Error: " + err.message));
         }
     </script>
