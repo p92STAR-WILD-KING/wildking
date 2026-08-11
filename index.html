@@ -45,7 +45,7 @@
         
         /* Real Game History Table Container */
         .history-title { font-size: 10px; font-weight: bold; color: #00e699; margin-top: 8px; margin-bottom: 4px; }
-        .history-container { max-height: 95px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); padding: 3px; }
+        .history-container { max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); padding: 3px; }
         .history-container::-webkit-scrollbar { width: 3px; }
         .history-container::-webkit-scrollbar-thumb { background: #00e699; border-radius: 3px; }
         
@@ -135,7 +135,6 @@
         let isPanelOpen = false;
         let isAuthenticated = false;
         
-        // Auto-Bet Variables (2x Martingale Logic)
         let isAutoBetRunning = false;
         let baseBetAmount = 10;
         let currentBetAmount = 10;
@@ -232,7 +231,6 @@
             }
         }
 
-        // Auto-Bet Controls
         function startAutoBet() {
             baseBetAmount = parseInt(document.getElementById('base-amount').value) || 10;
             currentBetAmount = baseBetAmount;
@@ -290,14 +288,12 @@
                         const statusMsgEl = document.getElementById('status-msg');
                         statusMsgEl.style.display = "block";
                         
-                        // Check Win or Loss & Execute Advanced 2x Martingale Calculation
                         if (currentPrediction === actualResultType) {
                             statusMsgEl.textContent = "🎉 Congratulations! Win";
                             statusMsgEl.style.color = "#00e699";
                             statusMsgEl.style.background = "rgba(0,230,153,0.15)";
                             
                             if (isAutoBetRunning) {
-                                // Reset to base amount on Win
                                 currentBetAmount = baseBetAmount;
                                 consecutiveLosses = 0;
                             }
@@ -307,7 +303,6 @@
                             statusMsgEl.style.background = "rgba(239,68,68,0.15)";
                             
                             if (isAutoBetRunning) {
-                                // Multiply by 2x on Loss (Martingale strategy)
                                 consecutiveLosses++;
                                 currentBetAmount = currentBetAmount * 2;
                             }
@@ -352,5 +347,4 @@
         }
     </script>
 </body>
-    </html>
-    
+</html>
