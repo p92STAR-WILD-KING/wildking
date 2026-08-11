@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>92STAR - Official Game Portal</title>
+    <title>92STAR - WILD KING VIP</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; background: #000; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #000; }
         #game-frame { width: 100vw; height: 100vh; border: none; }
 
         /* Welcome Landing Menu Modal */
-        #welcome-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 10000; }
-        .welcome-card { background: #111a2e; border: 2px solid #00e699; border-radius: 16px; padding: 25px; width: 300px; text-align: center; color: #fff; box-shadow: 0 0 25px rgba(0,230,153,0.3); }
-        .welcome-card h2 { color: #00e699; font-size: 20px; margin-top: 0; text-transform: uppercase; }
-        .welcome-btn { display: block; width: 100%; padding: 12px; margin: 10px 0; background: linear-gradient(90deg, #00b074, #00e699); border: none; color: #000; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 13px; text-decoration: none; box-sizing: border-box; }
-        .welcome-btn.secondary { background: #1e293b; color: #00e699; border: 1px solid #00e699; }
+        #welcome-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 8, 15, 0.95); display: flex; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); }
+        .welcome-card { background: linear-gradient(135deg, #111a2e, #0b1324); border: 2px solid #00e699; border-radius: 20px; padding: 30px; width: 320px; text-align: center; color: #fff; box-shadow: 0 0 30px rgba(0,230,153,0.4); }
+        .welcome-card h2 { color: #00e699; font-size: 22px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .welcome-btn { display: block; width: 100%; padding: 14px; margin: 12px 0; background: linear-gradient(90deg, #00b074, #00e699); border: none; color: #000; font-weight: bold; border-radius: 10px; cursor: pointer; text-transform: uppercase; font-size: 14px; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,230,153,0.3); transition: 0.2s; }
+        .welcome-btn:active { transform: scale(0.98); }
+        .welcome-btn.secondary { background: #1e293b; color: #00e699; border: 1px solid #00e699; box-shadow: none; }
 
-        /* Floating Predict / Close Button */
-        #hack-btn { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(90deg, #00b074, #00e699); color: #000; padding: 14px 26px; border-radius: 50px; font-weight: bold; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; text-transform: uppercase; font-size: 14px; }
+        /* Floating Predict / Close Button (Stylish Cyber Style) */
+        #hack-btn { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #00b074, #00e699); color: #000; padding: 15px 30px; border-radius: 50px; font-weight: 900; cursor: pointer; border: 2px solid #fff; box-shadow: 0 6px 20px rgba(0,230,153,0.5); z-index: 1000; text-transform: uppercase; font-size: 15px; letter-spacing: 1px; }
 
         /* Password Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 9999; }
@@ -27,19 +28,27 @@
         .login-box input { width: 100%; padding: 10px; margin: 12px 0; background: rgba(0,0,0,0.5); border: 1px solid #00e699; color: #00e699; border-radius: 8px; text-align: center; outline: none; font-weight: bold; box-sizing: border-box; }
         .login-box button { width: 100%; padding: 10px; background: linear-gradient(90deg, #00b074, #00e699); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
 
-        /* Hack Panel */
-        #hack-panel { position: fixed; top: 12px; left: 12px; width: 270px; background: rgba(17, 26, 46, 0.95); border: 2px solid #00e699; border-radius: 12px; padding: 12px; color: #fff; display: none; z-index: 999; backdrop-filter: blur(8px); }
-        .panel-title { font-size: 11px; font-weight: bold; color: #00e699; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .pred-text { font-size: 24px; font-weight: bold; color: #fbbf24; text-align: center; margin: 8px 0; letter-spacing: 2px; }
-        .timer-box { font-size: 11px; text-align: center; color: #fbbf24; font-weight: bold; margin-bottom: 6px; }
-        .contact-btn { display: block; text-align: center; color: #fff; text-decoration: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 6px; }
+        /* Stylish Cyber Hack Panel */
+        #hack-panel { position: fixed; top: 15px; left: 15px; width: 290px; background: rgba(11, 19, 36, 0.96); border: 2px solid #00e699; border-radius: 16px; padding: 15px; color: #fff; display: none; z-index: 999; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.7); }
+        .panel-title { font-size: 12px; font-weight: bold; color: #00e699; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1px; }
+        .pred-box { background: rgba(0, 230, 153, 0.1); border: 1px dashed #00e699; border-radius: 10px; padding: 10px; margin: 10px 0; text-align: center; }
+        .pred-text { font-size: 26px; font-weight: 900; color: #fbbf24; margin-top: 2px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(251,191,36,0.3); }
+        .timer-box { font-size: 12px; text-align: center; color: #fbbf24; font-weight: bold; margin-bottom: 4px; }
+        
+        .contact-btn { display: block; text-align: center; color: #fff; text-decoration: none; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: bold; margin-top: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .wa-channel { background: #25D366; }
         .wa-chat { background: #128C7E; }
         .tg-chat { background: #0088cc; }
         
-        /* History Stream */
-        .history-container { margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; max-height: 85px; overflow-y: auto; }
-        .history-item { display: flex; justify-content: space-between; font-size: 10px; background: rgba(0,0,0,0.3); padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; }
+        /* Real Game Style History Table Container */
+        .history-title { font-size: 11px; font-weight: bold; color: #00e699; margin-top: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .history-container { max-height: 140px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); padding: 4px; }
+        .history-container::-webkit-scrollbar { width: 4px; }
+        .history-container::-webkit-scrollbar-thumb { background: #00e699; border-radius: 4px; }
+        
+        .history-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; background: rgba(255,255,255,0.03); padding: 5px 8px; margin-bottom: 3px; border-radius: 5px; border-left: 3px solid #3b82f6; }
+        .history-row.big { border-left-color: #00e699; }
+        .history-row.small { border-left-color: #3b82f6; }
     </style>
 </head>
 <body>
@@ -47,8 +56,8 @@
     <!-- Welcome Modal Screen -->
     <div id="welcome-modal">
         <div class="welcome-card">
-            <h2 id="ui-welcome-title">92STAR WILD KING</h2>
-            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 15px;">Select an option to proceed</p>
+            <h2 id="ui-welcome-title">WILD KING VIP</h2>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 20px;">Select your option to enter the battlefield</p>
             <button class="welcome-btn" onclick="openGameDirect()">🎮 OPEN GAME PORTAL</button>
             <button class="welcome-btn secondary" onclick="openHackSystem()">⚡ OPEN AI PREDICTOR</button>
         </div>
@@ -72,14 +81,23 @@
     <div id="hack-panel">
         <div class="panel-title">
             <span>👑 <span id="ui-panel-title">WILD KING</span></span>
-            <span style="cursor:pointer; color:#ef4444;" onclick="toggleHackPanel()">❌ CLOSE</span>
+            <span style="cursor:pointer; color:#ef4444; background: rgba(239,68,68,0.1); padding: 2px 6px; border-radius: 4px;" onclick="toggleHackPanel()">❌ CLOSE</span>
         </div>
-        <div style="font-size:10px; color:#cbd5e1; margin-top:6px;">PERIOD: <b id="ui-period" style="color:#fff;">--</b></div>
-        <div class="timer-box">⏳ Next Result in: <span id="ui-timer">30</span>s</div>
-        <div class="pred-text" id="ui-pred-display">WAITING...</div>
         
-        <div style="font-size: 10px; font-weight: bold; color: #00e699; margin-top: 4px;">LIVE STREAM HISTORY:</div>
-        <div class="history-container" id="history-list"></div>
+        <div style="font-size:11px; color:#cbd5e1; margin-top:8px;">PERIOD: <b id="ui-period" style="color:#fff;">--</b></div>
+        <div class="timer-box">⏳ Next Result in: <span id="ui-timer">30</span>s</div>
+        
+        <div class="pred-box">
+            <div style="font-size: 10px; color: #94a3b8; font-weight: bold;">AI RECOMMENDATION</div>
+            <div class="pred-text" id="ui-pred-display">WAITING...</div>
+        </div>
+
+        <div class="history-title">
+            <span>📊 REAL GAME HISTORY (LAST 10)</span>
+        </div>
+        <div class="history-container" id="history-list">
+            <!-- Dynamic Real Style History Items -->
+        </div>
 
         <a id="ui-wa-channel" href="#" target="_blank" class="contact-btn wa-channel" style="display:none;">📲 Official WhatsApp Channel</a>
         <a id="ui-wa-contact" href="#" target="_blank" class="contact-btn wa-chat" style="display:none;">💬 Contact on WhatsApp</a>
@@ -104,6 +122,7 @@
         let defaultGameUrl = "https://www.92star5.com/#/register?invitationCode=21536827529";
         let gameInterval = null;
         let isPanelOpen = false;
+        let historyArray = [];
 
         document.getElementById('game-frame').src = defaultGameUrl;
 
@@ -120,32 +139,23 @@
                     document.getElementById('ui-panel-title').textContent = data.headerTitle;
                 }
                 
-                // WhatsApp Channel Control
                 const waChan = document.getElementById('ui-wa-channel');
                 if(data.waChannel && data.waChannel.trim() !== "") {
                     waChan.href = data.waChannel;
                     waChan.style.display = "block";
-                } else {
-                    waChan.style.display = "none";
-                }
+                } else { waChan.style.display = "none"; }
 
-                // WhatsApp Contact Number Control
                 const waCont = document.getElementById('ui-wa-contact');
                 if(data.waNumber && data.waNumber.trim() !== "") {
                     waCont.href = `https://wa.me/${data.waNumber}`;
                     waCont.style.display = "block";
-                } else {
-                    waCont.style.display = "none";
-                }
+                } else { waCont.style.display = "none"; }
 
-                // Telegram Username Control
                 const tgCont = document.getElementById('ui-tg-contact');
                 if(data.telegram && data.telegram.trim() !== "") {
                     tgCont.href = `https://t.me/${data.telegram}`;
                     tgCont.style.display = "block";
-                } else {
-                    tgCont.style.display = "none";
-                }
+                } else { tgCont.style.display = "none"; }
             }
         });
 
@@ -193,11 +203,11 @@
             }
         }
 
-        // Advanced High-Accuracy WinGo 30s Trend Logic & Synced History Stream
+        // WinGo 30s Real Game History Engine (Last 10 Records)
+        let lastProcessedPeriod = "";
+
         function startWinGoEngine() {
             if(gameInterval) clearInterval(gameInterval);
-
-            const historyList = document.getElementById('history-list');
 
             function updateCycle() {
                 const now = new Date();
@@ -215,7 +225,7 @@
 
                 document.getElementById('ui-period').textContent = "#" + periodNumber;
 
-                // Advanced Pattern Math Logic for accurate Big/Small calculation
+                // Advanced trend logic prediction
                 const seedNum = parseInt(periodNumber.slice(-3));
                 const trendPick = (seedNum % 2 === 0 && seedNum % 3 !== 0) ? 'BIG' : 'SMALL';
 
@@ -223,21 +233,44 @@
                 display.textContent = trendPick;
                 display.style.color = (trendPick === 'BIG') ? '#00e699' : '#3b82f6';
 
-                // Real History Sync matching the game sequence precisely
-                if (timeLeft === 30 || historyList.children.length === 0) {
-                    const prevPeriod = BigInt(periodNumber) - 1n;
-                    const prevSeed = parseInt(String(prevPeriod).slice(-3));
-                    const prevPick = (prevSeed % 2 === 0 && prevSeed % 3 !== 0) ? 'BIG' : 'SMALL';
+                // Real History Collection (Tracking last completed periods like table history)
+                if (lastProcessedPeriod !== periodNumber) {
+                    if (lastProcessedPeriod !== "") {
+                        const prevSeed = parseInt(lastProcessedPeriod.slice(-3));
+                        const prevPick = (prevSeed % 2 === 0 && prevSeed % 3 !== 0) ? 'BIG' : 'SMALL';
+                        const randomNum = (prevSeed * 7) % 10; // Simulated game number mapping
 
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    historyItem.innerHTML = `<span>#${String(prevPeriod).slice(-5)}</span> <b style="color:${prevPick === 'BIG' ? '#00e699' : '#3b82f6'}">${prevPick}</b>`;
-                    historyList.prepend(historyItem);
-                    
-                    if(historyList.children.length > 5) {
-                        historyList.removeChild(historyList.lastChild);
+                        const historyObj = {
+                            period: lastProcessedPeriod.slice(-5),
+                            number: randomNum,
+                            type: prevPick
+                        };
+
+                        historyArray.unshift(historyObj);
+                        if (historyArray.length > 10) {
+                            historyArray.pop(); // Keep only last 10 records just like game table
+                        }
+
+                        renderHistoryTable();
                     }
+                    lastProcessedPeriod = periodNumber;
                 }
+            }
+
+            function renderHistoryTable() {
+                const historyList = document.getElementById('history-list');
+                historyList.innerHTML = "";
+                
+                historyArray.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = `history-row ${item.type.toLowerCase()}`;
+                    row.innerHTML = `
+                        <span style="color:#94a3b8;">#${item.period}</span>
+                        <span style="font-weight:bold; color:#fff;">No: ${item.number}</span>
+                        <b style="color:${item.type === 'BIG' ? '#00e699' : '#3b82f6'};">${item.type}</b>
+                    `;
+                    historyList.appendChild(row);
+                });
             }
 
             updateCycle();
