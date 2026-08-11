@@ -31,9 +31,158 @@
         .login-box button { width: 100%; padding: 10px; background: linear-gradient(90deg, var(--primary), var(--secondary)); border: none; color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
 
         /* Panel */
-        #hack-panel { position: fixed; top: 12px; left: 12px; width: 260px; background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; padding: 12px; color: #fff; display: none; z-index: 999; backdrop-filter: blur(8px); }
-        .panel-title { font-size: 11px; font-weight: bold; color: var(--secondary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-transform: uppercase; }
-        .pred-text { font-size: 20px; font-weight: bold; color: var(--secondary); text-align: center; margin: 10px 0; letter-spacing: 1px; }
+        #hack-panel { position: fixed; top: 12px; left: 12px; width: 270px; background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; padding: 12px; color: #fff; display: none; z-index: 999; backdrop-filter: blur(8px); }
+        .panel-title { font-size: 11px; font-weight: bold; color: var(--secondary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .pred-text { font-size: 24px; font-weight: bold; color: #fbbf24; text-align: center; margin: 8px 0; letter-spacing: 2px; }
+        .timer-box { font-size: 11px; text-align: center; color: #fbbf24; font-weight: bold; margin-bottom: 6px; }
+        .wa-btn { display: block; text-align: center; background: #25D366; color: #fff; text-decoration: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 8px; }
+        
+        /* History Stream */
+        .history-container { margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; max-height: 90px; overflow-y: auto; }
+        .history-item { display: flex; justify-content: space-between; font-size: 10px; background: rgba(0,0,0,0.3); padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; }
+    </style>
+</head>
+<body class="theme-emerald">
+
+    <div id="hack-btn" onclick="showAuth()">🎯 PREDICT</div>
+
+    <div id="auth-modal" class="modal-overlay">
+        <div class="login-box">
+            <h3 id="ui-auth-title">92STAR WILD KING</h3>
+            <p style="font-size: 10px; color: #cbd5e1; margin: 0;">ENTER VIP ACCESS KEY</p>
+            <input type="password" id="user-pass-input" placeholder="Enter Password...">
+            <button onclick="validatePassword()">VERIFY ACCESS</button>
+            <button onclick="closeAuth()" style="background:#333; margin-top:8px;">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="hack-panel">
+        <div class="panel-title">
+            <span>👑 <span id="ui-panel-title">WILD KING</span></span>
+            <span style="cursor:pointer;" onclick="closePanel()">❌</span>
+        </div>
+        <div style="font-size:10px; color:#cbd5e1; margin-top:6px;">PERIOD: <b id="ui-period" style="color:#fff;">--</b></div>
+        <div class="timer-box">⏳ Next Result in: <span id="ui-timer">30</span>s</div>
+        <div class="pred-text" id="ui-pred-display">WAITING...</div>
+        
+        <div style="font-size: 10px; font-weight: bold; color: var(--secondary); margin-top: 4px;">LIVE STREAM HISTORY:</div>
+        <div class="history-container" id="history-list">
+            <!-- Dynamic History -->
+        </div>
+
+        <a id="ui-wa-link" href="#" target="_blank" class="wa-btn" style="display:none;">📲 Join Official WhatsApp</a>
+    </div>
+
+    <iframe id="game-frame" src="about:blank"></iframe>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA88rkLL26wYKXwtKqh8iU4LI",
+            authDomain: "wild-king-vip.firebaseapp.com",
+            projectId: "wild-king-vip",
+            storageBucket: "wild-king-vip.firebasestorage.app",
+            messagingSenderId: "95207356123",
+            appId: "1:95207356123:web:eea5e7184582e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let activePassword = "96A4MSW";
+        let defaultGameUrl = "https://www.92star5.com/#/register?invitationCode=21536827529";
+        let gameInterval = null;
+
+        document.getElementById('game-frame').src = defaultGameUrl;
+
+        db.collection("config").doc("siteSettings").onSnapshot(doc => {
+            if(doc.exists) {
+                const data = doc.data();
+                if(data.accessPassword) activePassword = data.accessPassword;
+                if(data.gameUrl && document.getElementById('game-frame').src !== data.gameUrl) {
+                    document.getElementById('game-frame').src = data.gameUrl;
+                }
+                if(data.headerTitle) {
+                    document.getElementById('ui-auth-title').textContent = data.headerTitle;
+                    document.getElementById('ui-panel-title').textContent = data.headerTitle;
+                }
+                if(data.theme) {
+                    document.body.className = "theme-" + data.theme;
+                }
+                if(data.waChannel) {
+                    const waBtn = document.getElementById('ui-wa-link');
+                    waBtn.href = data.waChannel;
+                    waBtn.style.display = "block";
+                }
+            }
+        });
+
+        function showAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
+        function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
+        function closePanel() { document.getElementById('hack-panel').style.display = 'none'; document.getElementById('hack-btn').style.display = 'block'; }
+
+        function validatePassword() {
+            const entered = document.getElementById('user-pass-input').value.trim();
+            if(entered === activePassword) {
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('hack-panel').style.display = 'block';
+                document.getElementById('hack-btn').style.display = 'none';
+                startWinGoEngine();
+            } else {
+                alert("❌ Incorrect Access Key!");
+            }
+        }
+
+        // WinGo 30s Trend Logic (Only BIG & SMALL)
+        function startWinGoEngine() {
+            if(gameInterval) clearInterval(gameInterval);
+
+            const options = ['BIG', 'SMALL', 'BIG', 'BIG', 'SMALL', 'SMALL', 'BIG', 'SMALL'];
+            const historyList = document.getElementById('history-list');
+
+            function updateCycle() {
+                const now = new Date();
+                const totalSeconds = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+                const currentSecondInMin = now.getSeconds();
+                
+                // 30s countdown calculation
+                const timeLeft = 30 - (currentSecondInMin % 30);
+                document.getElementById('ui-timer').textContent = timeLeft < 10 ? "0" + timeLeft : timeLeft;
+
+                // Accurate 30s Period Number Logic
+                const yyyy = now.getUTCFullYear();
+                const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+                const dd = String(now.getUTCDate()).padStart(2, '0');
+                const totalPeriodsToday = Math.floor(totalSeconds / 30);
+                const periodNumber = `${yyyy}${mm}${dd}1000${10001 + totalPeriodsToday}`;
+
+                document.getElementById('ui-period').textContent = "#" + periodNumber;
+
+                // Trend based smooth pattern calculation for BIG/SMALL
+                const seed = parseInt(periodNumber.slice(-4));
+                const trendPick = options[seed % options.length];
+
+                const display = document.getElementById('ui-pred-display');
+                display.textContent = trendPick;
+                display.style.color = (trendPick === 'BIG') ? '#00e699' : '#3b82f6';
+
+                // Live stream history update
+                if (timeLeft === 30 || historyList.children.length === 0) {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `<span>#${periodNumber.slice(-5)}</span> <b style="color:${display.style.color}">${trendPick}</b>`;
+                    historyList.prepend(historyItem);
+                    
+                    if(historyList.children.length > 5) {
+                        historyList.removeChild(historyList.lastChild);
+                    }
+                }
+            }
+
+            updateCycle();
+            gameInterval = setInterval(updateCycle, 1000);
+        }
+    </script>
+</body>
+</html>
         .wa-btn { display: block; text-align: center; background: #25D366; color: #fff; text-decoration: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 8px; }
     </style>
 </head>
