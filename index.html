@@ -3,74 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Portal</title>
+    <title>92STAR - Official Game Portal</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
-        :root {
-            --primary: #00b074;
-            --secondary: #00e699;
-            --bg-card: rgba(2, 26, 19, 0.95);
-        }
-
-        body.theme-crimson { --primary: #e11d48; --secondary: #f43f5e; --bg-card: rgba(30, 10, 15, 0.95); }
-        body.theme-royal { --primary: #2563eb; --secondary: #3b82f6; --bg-card: rgba(10, 20, 40, 0.95); }
-        body.theme-violet { --primary: #7c3aed; --secondary: #8b5cf6; --bg-card: rgba(25, 10, 35, 0.95); }
-
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; background: #000; }
         #game-frame { width: 100vw; height: 100vh; border: none; }
 
-        /* Predict Button */
-        #hack-btn { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #fff; padding: 14px 28px; border-radius: 50px; font-weight: bold; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; text-transform: uppercase; font-size: 14px; }
+        /* Welcome Landing Menu Modal */
+        #welcome-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .welcome-card { background: #111a2e; border: 2px solid #00e699; border-radius: 16px; padding: 25px; width: 300px; text-align: center; color: #fff; box-shadow: 0 0 25px rgba(0,230,153,0.3); }
+        .welcome-card h2 { color: #00e699; font-size: 20px; margin-top: 0; text-transform: uppercase; }
+        .welcome-btn { display: block; width: 100%; padding: 12px; margin: 10px 0; background: linear-gradient(90deg, #00b074, #00e699); border: none; color: #000; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 13px; text-decoration: none; box-sizing: border-box; }
+        .welcome-btn.secondary { background: #1e293b; color: #00e699; border: 1px solid #00e699; }
 
-        /* Modal */
+        /* Floating Predict Button */
+        #hack-btn { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(90deg, #00b074, #00e699); color: #000; padding: 14px 26px; border-radius: 50px; font-weight: bold; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; text-transform: uppercase; font-size: 14px; }
+
+        /* Password Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 9999; }
-        .login-box { background: var(--bg-card); border: 2px solid var(--primary); border-radius: 16px; padding: 25px; width: 280px; text-align: center; color: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.6); }
-        .login-box h3 { color: var(--secondary); margin: 0 0 10px 0; font-size: 16px; }
-        .login-box input { width: 100%; padding: 10px; margin: 12px 0; background: rgba(0,0,0,0.5); border: 1px solid var(--primary); color: var(--secondary); border-radius: 8px; text-align: center; outline: none; font-weight: bold; box-sizing: border-box; }
-        .login-box button { width: 100%; padding: 10px; background: linear-gradient(90deg, var(--primary), var(--secondary)); border: none; color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        .login-box { background: #111a2e; border: 2px solid #00e699; border-radius: 16px; padding: 25px; width: 280px; text-align: center; color: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.6); }
+        .login-box h3 { color: #00e699; margin: 0 0 10px 0; font-size: 16px; }
+        .login-box input { width: 100%; padding: 10px; margin: 12px 0; background: rgba(0,0,0,0.5); border: 1px solid #00e699; color: #00e699; border-radius: 8px; text-align: center; outline: none; font-weight: bold; box-sizing: border-box; }
+        .login-box button { width: 100%; padding: 10px; background: linear-gradient(90deg, #00b074, #00e699); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
 
-        /* Panel */
-        #hack-panel { position: fixed; top: 12px; left: 12px; width: 270px; background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; padding: 12px; color: #fff; display: none; z-index: 999; backdrop-filter: blur(8px); }
-        .panel-title { font-size: 11px; font-weight: bold; color: var(--secondary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        /* Hack Panel */
+        #hack-panel { position: fixed; top: 12px; left: 12px; width: 270px; background: rgba(17, 26, 46, 0.95); border: 2px solid #00e699; border-radius: 12px; padding: 12px; color: #fff; display: none; z-index: 999; backdrop-filter: blur(8px); }
+        .panel-title { font-size: 11px; font-weight: bold; color: #00e699; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
         .pred-text { font-size: 24px; font-weight: bold; color: #fbbf24; text-align: center; margin: 8px 0; letter-spacing: 2px; }
         .timer-box { font-size: 11px; text-align: center; color: #fbbf24; font-weight: bold; margin-bottom: 6px; }
-        .wa-btn { display: block; text-align: center; background: #25D366; color: #fff; text-decoration: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 8px; }
+        .contact-btn { display: block; text-align: center; color: #fff; text-decoration: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 6px; }
+        .wa-channel { background: #25D366; }
+        .wa-chat { background: #128C7E; }
+        .tg-chat { background: #0088cc; }
         
         /* History Stream */
-        .history-container { margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; max-height: 90px; overflow-y: auto; }
+        .history-container { margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; max-height: 85px; overflow-y: auto; }
         .history-item { display: flex; justify-content: space-between; font-size: 10px; background: rgba(0,0,0,0.3); padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; }
     </style>
 </head>
-<body class="theme-emerald">
+<body>
 
-    <div id="hack-btn" onclick="showAuth()">🎯 PREDICT</div>
-
-    <div id="auth-modal" class="modal-overlay">
-        <div class="login-box">
-            <h3 id="ui-auth-title">92STAR WILD KING</h3>
-            <p style="font-size: 10px; color: #cbd5e1; margin: 0;">ENTER VIP ACCESS KEY</p>
-            <input type="password" id="user-pass-input" placeholder="Enter Password...">
-            <button onclick="validatePassword()">VERIFY ACCESS</button>
-            <button onclick="closeAuth()" style="background:#333; margin-top:8px;">CANCEL</button>
+    <!-- Welcome Modal Screen -->
+    <div id="welcome-modal">
+        <div class="welcome-card">
+            <h2 id="ui-welcome-title">92STAR WILD KING</h2>
+            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 15px;">Select an option to proceed</p>
+            <button class="welcome-btn" onclick="openGameDirect()">🎮 OPEN GAME PORTAL</button>
+            <button class="welcome-btn secondary" onclick="openHackSystem()">⚡ OPEN AI PREDICTOR</button>
         </div>
     </div>
 
+    <!-- Floating Toggle Button -->
+    <div id="hack-btn" onclick="toggleHackPanel()" style="display:none;">🎯 PREDICT</div>
+
+    <!-- Password Modal -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="login-box">
+            <h3 id="ui-auth-title">VIP ACCESS</h3>
+            <p style="font-size: 10px; color: #cbd5e1; margin: 0;">ENTER PASSWORD</p>
+            <input type="password" id="user-pass-input" placeholder="Password...">
+            <button onclick="validatePassword()">VERIFY ACCESS</button>
+            <button onclick="closeAuth()" style="background:#333; color:#fff; margin-top:8px;">CANCEL</button>
+        </div>
+    </div>
+
+    <!-- Active Hack Panel -->
     <div id="hack-panel">
         <div class="panel-title">
             <span>👑 <span id="ui-panel-title">WILD KING</span></span>
-            <span style="cursor:pointer;" onclick="closePanel()">❌</span>
+            <span style="cursor:pointer;" onclick="toggleHackPanel()">❌ CLOSE</span>
         </div>
         <div style="font-size:10px; color:#cbd5e1; margin-top:6px;">PERIOD: <b id="ui-period" style="color:#fff;">--</b></div>
         <div class="timer-box">⏳ Next Result in: <span id="ui-timer">30</span>s</div>
         <div class="pred-text" id="ui-pred-display">WAITING...</div>
         
-        <div style="font-size: 10px; font-weight: bold; color: var(--secondary); margin-top: 4px;">LIVE STREAM HISTORY:</div>
-        <div class="history-container" id="history-list">
-            <!-- Dynamic History -->
-        </div>
+        <div style="font-size: 10px; font-weight: bold; color: #00e699; margin-top: 4px;">LIVE STREAM HISTORY:</div>
+        <div class="history-container" id="history-list"></div>
 
-        <a id="ui-wa-link" href="#" target="_blank" class="wa-btn" style="display:none;">📲 Join Official WhatsApp</a>
+        <a id="ui-wa-channel" href="#" target="_blank" class="contact-btn wa-channel" style="display:none;">📲 Official WhatsApp Channel</a>
+        <a id="ui-wa-contact" href="#" target="_blank" class="contact-btn wa-chat" style="display:none;">💬 Contact on WhatsApp</a>
+        <a id="ui-tg-contact" href="#" target="_blank" class="contact-btn tg-chat" style="display:none;">✈️ Contact on Telegram</a>
     </div>
 
     <iframe id="game-frame" src="about:blank"></iframe>
@@ -90,6 +103,7 @@
         let activePassword = "96A4MSW";
         let defaultGameUrl = "https://www.92star5.com/#/register?invitationCode=21536827529";
         let gameInterval = null;
+        let isPanelOpen = false;
 
         document.getElementById('game-frame').src = defaultGameUrl;
 
@@ -101,37 +115,73 @@
                     document.getElementById('game-frame').src = data.gameUrl;
                 }
                 if(data.headerTitle) {
+                    document.getElementById('ui-welcome-title').textContent = data.headerTitle;
                     document.getElementById('ui-auth-title').textContent = data.headerTitle;
                     document.getElementById('ui-panel-title').textContent = data.headerTitle;
                 }
-                if(data.theme) {
-                    document.body.className = "theme-" + data.theme;
-                }
                 if(data.waChannel) {
-                    const waBtn = document.getElementById('ui-wa-link');
-                    waBtn.href = data.waChannel;
-                    waBtn.style.display = "block";
+                    const btn = document.getElementById('ui-wa-channel');
+                    btn.href = data.waChannel;
+                    btn.style.display = "block";
+                }
+                if(data.waNumber) {
+                    const btn = document.getElementById('ui-wa-contact');
+                    btn.href = `https://wa.me/${data.waNumber}`;
+                    btn.style.display = "block";
+                }
+                if(data.telegram) {
+                    const btn = document.getElementById('ui-tg-contact');
+                    btn.href = `https://t.me/${data.telegram}`;
+                    btn.style.display = "block";
                 }
             }
         });
 
-        function showAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
-        function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
-        function closePanel() { document.getElementById('hack-panel').style.display = 'none'; document.getElementById('hack-btn').style.display = 'block'; }
+        function openGameDirect() {
+            document.getElementById('welcome-modal').style.display = 'none';
+            document.getElementById('hack-btn').style.display = 'block';
+        }
+
+        function openHackSystem() {
+            document.getElementById('welcome-modal').style.display = 'none';
+            document.getElementById('auth-modal').style.display = 'flex';
+        }
+
+        function closeAuth() {
+            document.getElementById('auth-modal').style.display = 'none';
+            document.getElementById('welcome-modal').style.display = 'flex';
+        }
+
+        function toggleHackPanel() {
+            const panel = document.getElementById('hack-panel');
+            const btn = document.getElementById('hack-btn');
+            if(!isPanelOpen) {
+                panel.style.display = 'block';
+                btn.textContent = '❌ CLOSE';
+                isPanelOpen = true;
+                startWinGoEngine();
+            } else {
+                panel.style.display = 'none';
+                btn.textContent = '🎯 PREDICT';
+                isPanelOpen = false;
+            }
+        }
 
         function validatePassword() {
             const entered = document.getElementById('user-pass-input').value.trim();
             if(entered === activePassword) {
                 document.getElementById('auth-modal').style.display = 'none';
                 document.getElementById('hack-panel').style.display = 'block';
-                document.getElementById('hack-btn').style.display = 'none';
+                document.getElementById('hack-btn').style.display = 'block';
+                document.getElementById('hack-btn').textContent = '❌ CLOSE';
+                isPanelOpen = true;
                 startWinGoEngine();
             } else {
-                alert("❌ Incorrect Access Key!");
+                alert("❌ Incorrect Password!");
             }
         }
 
-        // WinGo 30s Trend Logic (Only BIG & SMALL)
+        // WinGo 30s Trend Engine & History Synced
         function startWinGoEngine() {
             if(gameInterval) clearInterval(gameInterval);
 
@@ -143,11 +193,9 @@
                 const totalSeconds = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
                 const currentSecondInMin = now.getSeconds();
                 
-                // 30s countdown calculation
                 const timeLeft = 30 - (currentSecondInMin % 30);
                 document.getElementById('ui-timer').textContent = timeLeft < 10 ? "0" + timeLeft : timeLeft;
 
-                // Accurate 30s Period Number Logic
                 const yyyy = now.getUTCFullYear();
                 const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
                 const dd = String(now.getUTCDate()).padStart(2, '0');
@@ -156,7 +204,6 @@
 
                 document.getElementById('ui-period').textContent = "#" + periodNumber;
 
-                // Trend based smooth pattern calculation for BIG/SMALL
                 const seed = parseInt(periodNumber.slice(-4));
                 const trendPick = options[seed % options.length];
 
@@ -164,7 +211,6 @@
                 display.textContent = trendPick;
                 display.style.color = (trendPick === 'BIG') ? '#00e699' : '#3b82f6';
 
-                // Live stream history update
                 if (timeLeft === 30 || historyList.children.length === 0) {
                     const historyItem = document.createElement('div');
                     historyItem.className = 'history-item';
@@ -179,113 +225,6 @@
 
             updateCycle();
             gameInterval = setInterval(updateCycle, 1000);
-        }
-    </script>
-</body>
-</html>
-        .wa-btn { display: block; text-align: center; background: #25D366; color: #fff; text-decoration: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 8px; }
-    </style>
-</head>
-<body class="theme-emerald">
-
-    <div id="hack-btn" onclick="showAuth()">🎯 PREDICT</div>
-
-    <div id="auth-modal" class="modal-overlay">
-        <div class="login-box">
-            <h3 id="ui-auth-title">92STAR WILD KING</h3>
-            <p style="font-size: 10px; color: #cbd5e1; margin: 0;">ENTER VIP ACCESS KEY</p>
-            <input type="password" id="user-pass-input" placeholder="Enter Password...">
-            <button onclick="validatePassword()">VERIFY ACCESS</button>
-            <button onclick="closeAuth()" style="background:#333; margin-top:8px;">CANCEL</button>
-        </div>
-    </div>
-
-    <div id="hack-panel">
-        <div class="panel-title">👑 <span id="ui-panel-title">92STAR WILD KING</span> | ACTIVE</div>
-        <div style="font-size:10px; color:#cbd5e1; margin-top:8px;">PERIOD SIGNAL: <b id="ui-period" style="color:#fff;">#101</b></div>
-        <div class="pred-text" id="ui-pred-display">ANALYZING...</div>
-        <a id="ui-wa-link" href="#" target="_blank" class="wa-btn" style="display:none;">📲 Join Official WhatsApp</a>
-    </div>
-
-    <iframe id="game-frame" src="about:blank"></iframe>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyA88rkLL26wYKXwtKqh8iU4LI",
-            authDomain: "wild-king-vip.firebaseapp.com",
-            projectId: "wild-king-vip",
-            storageBucket: "wild-king-vip.firebasestorage.app",
-            messagingSenderId: "95207356123",
-            appId: "1:95207356123:web:eea5e7184582e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        let activePassword = "96A4MSW";
-        let defaultGameUrl = "https://www.92star5.com/#/register?invitationCode=21536827529";
-        let predSpeed = 30000;
-        let predTimer = null;
-
-        document.getElementById('game-frame').src = defaultGameUrl;
-
-        db.collection("config").doc("siteSettings").onSnapshot(doc => {
-            if(doc.exists) {
-                const data = doc.data();
-                if(data.accessPassword) activePassword = data.accessPassword;
-                if(data.gameUrl && document.getElementById('game-frame').src !== data.gameUrl) {
-                    document.getElementById('game-frame').src = data.gameUrl;
-                }
-                if(data.headerTitle) {
-                    document.getElementById('ui-auth-title').textContent = data.headerTitle;
-                    document.getElementById('ui-panel-title').textContent = data.headerTitle;
-                }
-                if(data.theme) {
-                    document.body.className = "theme-" + data.theme;
-                }
-                if(data.waChannel) {
-                    const waBtn = document.getElementById('ui-wa-link');
-                    waBtn.href = data.waChannel;
-                    waBtn.style.display = "block";
-                }
-                if(data.speed) {
-                    predSpeed = parseInt(data.speed) * 1000;
-                }
-            }
-        });
-
-        function showAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
-        function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
-
-        function validatePassword() {
-            const entered = document.getElementById('user-pass-input').value.trim();
-            if(entered === activePassword) {
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('hack-panel').style.display = 'block';
-                document.getElementById('hack-btn').style.display = 'none';
-                startPrediction();
-            } else {
-                alert("❌ Incorrect Access Key!");
-            }
-        }
-
-        function startPrediction() {
-            if(predTimer) clearInterval(predTimer);
-            const options = ['BIG', 'SMALL', 'RED', 'GREEN'];
-            let periodCount = 100;
-            
-            const run = () => {
-                periodCount++;
-                const pick = options[Math.floor(Math.random() * options.length)];
-                const display = document.getElementById('ui-pred-display');
-                if(display) {
-                    display.textContent = pick;
-                    display.style.color = (pick === 'RED') ? '#ef4444' : (pick === 'GREEN' ? '#10b981' : '#00e699');
-                }
-                document.getElementById('ui-period').textContent = "#" + periodCount;
-            };
-            
-            run();
-            predTimer = setInterval(run, predSpeed);
         }
     </script>
 </body>
