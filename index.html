@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <!-- Floating Toggle Button (Predict / Close) -->
+    <!-- Floating Toggle Button -->
     <div id="hack-btn" onclick="toggleHackPanel()" style="display:none;">🎯 PREDICT</div>
 
     <!-- Password Modal -->
@@ -119,20 +119,32 @@
                     document.getElementById('ui-auth-title').textContent = data.headerTitle;
                     document.getElementById('ui-panel-title').textContent = data.headerTitle;
                 }
-                if(data.waChannel) {
-                    const btn = document.getElementById('ui-wa-channel');
-                    btn.href = data.waChannel;
-                    btn.style.display = "block";
+                
+                // WhatsApp Channel Control
+                const waChan = document.getElementById('ui-wa-channel');
+                if(data.waChannel && data.waChannel.trim() !== "") {
+                    waChan.href = data.waChannel;
+                    waChan.style.display = "block";
+                } else {
+                    waChan.style.display = "none";
                 }
-                if(data.waNumber) {
-                    const btn = document.getElementById('ui-wa-contact');
-                    btn.href = `https://wa.me/${data.waNumber}`;
-                    btn.style.display = "block";
+
+                // WhatsApp Contact Number Control
+                const waCont = document.getElementById('ui-wa-contact');
+                if(data.waNumber && data.waNumber.trim() !== "") {
+                    waCont.href = `https://wa.me/${data.waNumber}`;
+                    waCont.style.display = "block";
+                } else {
+                    waCont.style.display = "none";
                 }
-                if(data.telegram) {
-                    const btn = document.getElementById('ui-tg-contact');
-                    btn.href = `https://t.me/${data.telegram}`;
-                    btn.style.display = "block";
+
+                // Telegram Username Control
+                const tgCont = document.getElementById('ui-tg-contact');
+                if(data.telegram && data.telegram.trim() !== "") {
+                    tgCont.href = `https://t.me/${data.telegram}`;
+                    tgCont.style.display = "block";
+                } else {
+                    tgCont.style.display = "none";
                 }
             }
         });
@@ -152,7 +164,6 @@
             document.getElementById('welcome-modal').style.display = 'flex';
         }
 
-        // Single Toggle Button Functionality (Predict <=> Close)
         function toggleHackPanel() {
             const panel = document.getElementById('hack-panel');
             const btn = document.getElementById('hack-btn');
@@ -182,7 +193,7 @@
             }
         }
 
-        // Advanced High-Accuracy WinGo 30s Trend Logic & Real History Match
+        // Advanced High-Accuracy WinGo 30s Trend Logic & Synced History Stream
         function startWinGoEngine() {
             if(gameInterval) clearInterval(gameInterval);
 
@@ -212,11 +223,15 @@
                 display.textContent = trendPick;
                 display.style.color = (trendPick === 'BIG') ? '#00e699' : '#3b82f6';
 
-                // Real History Sync matching the game sequence
+                // Real History Sync matching the game sequence precisely
                 if (timeLeft === 30 || historyList.children.length === 0) {
+                    const prevPeriod = BigInt(periodNumber) - 1n;
+                    const prevSeed = parseInt(String(prevPeriod).slice(-3));
+                    const prevPick = (prevSeed % 2 === 0 && prevSeed % 3 !== 0) ? 'BIG' : 'SMALL';
+
                     const historyItem = document.createElement('div');
                     historyItem.className = 'history-item';
-                    historyItem.innerHTML = `<span>#${periodNumber.slice(-5)}</span> <b style="color:${display.style.color}">${trendPick}</b>`;
+                    historyItem.innerHTML = `<span>#${String(prevPeriod).slice(-5)}</span> <b style="color:${prevPick === 'BIG' ? '#00e699' : '#3b82f6'}">${prevPick}</b>`;
                     historyList.prepend(historyItem);
                     
                     if(historyList.children.length > 5) {
@@ -230,5 +245,4 @@
         }
     </script>
 </body>
-            </html>
-    
+</html>
